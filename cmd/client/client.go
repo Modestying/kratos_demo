@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	registry "github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/hashicorp/consul/api"
+	//registry "github.com/go-kratos/kratos/contrib/registry/consul/v2"
+	//"github.com/go-kratos/kratos/v2/transport/grpc"
+	//"github.com/hashicorp/consul/api"
 	"log"
 	"time"
+	"google.golang.org/grpc"
 )
 
 import (
@@ -14,23 +15,24 @@ import (
 )
 
 func main() {
-	conf := &api.Config{Address: "192.168.10.153:8500"}
-	client, err := api.NewClient(conf)
-	if err != nil {
-		panic(err)
-	}
+	// conf := &api.Config{Address: "192.168.10.153:8500"}
+	// client, err := api.NewClient(conf)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	dis := registry.New(client)
-	//<schema>://[namespace]/<service-name>
-	//namespace是consul 企业版才有 https://www.consul.io/commands/namespace#basic-examples
-	//default 是默认值.最下面：https://www.consul.io/api-docs/discovery-chain
-	endpoint := "discovery://default/Demo"
-	conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis))
-	if err != nil {
-		panic(err)
-	}
+	// dis := registry.New(client)
+	// //<schema>://[namespace]/<service-name>
+	// //namespace是consul 企业版才有 https://www.consul.io/commands/namespace#basic-examples
+	// //default 是默认值.最下面：https://www.consul.io/api-docs/discovery-chain
+	// endpoint := "discovery://default/Demo"
+	// conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer conn.Close()
+	conn, err := grpc.Dial("0.0.0.0:9000", grpc.WithBlock())
 	defer conn.Close()
-
 	dd := NewGreeterClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()

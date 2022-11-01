@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	"github.com/hashicorp/consul/api"
+	//"fmt"
+	// "github.com/go-kratos/kratos/contrib/registry/consul/v2"
+	// "github.com/hashicorp/consul/api"
 	"helloworld/internal/data"
 	"os"
 
@@ -36,40 +36,12 @@ func init() {
 	//服务唯一标识
 	Name = "Demo"
 	//id  采用主机名，不然会替代已有service.ID
-	id = "174"
+	id = "ASUS"
 	// Version is the version of the compiled software.
 	Version = "0.1"
 }
 
 func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebServer) *kratos.App {
-	// 服务注册
-	conf := &api.Config{Address: "192.168.10.153:8500"}
-	client, err := api.NewClient(conf)
-	if err != nil {
-		panic(err)
-	}
-
-	opts := []consul.Option{
-		consul.WithHeartbeat(true),
-		consul.WithHealthCheck(true),
-		consul.WithHealthCheckInterval(5),
-	}
-	reg := consul.New(client, opts...)
-
-	//自定义服务，可注册，但kratos在服务程序结束时不会自动注销该服务
-	//svc := &registry.ServiceInstance{
-	//	Name:      "Web",
-	//	ID:        "web-96",
-	//	Version:   Version,
-	//	Metadata:  map[string]string{"app": "kratos"},
-	//	Endpoints: []string{"http://192.168.10.96:8080"},
-	//}
-	//err = reg.Register(context.Background(), svc)
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(conf)
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -81,12 +53,11 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebS
 			gs,
 			demo,
 		),
-		kratos.Registrar(reg),
 	)
 }
 
 func main() {
-	flagconf = "configs/config.yaml"
+	flagconf = "/home/fyl/Code/GoProject/kratos_demo/configs/config.yaml"
 	flag.Parse()
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,
