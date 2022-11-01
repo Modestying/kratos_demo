@@ -1,10 +1,13 @@
+service:
+  name: demo
+  node: "49"
+  version: "dev"
 server:
-  http:
-    addr: 0.0.0.0:8000
-    timeout: 1s
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 192.168.10.49:9000 #手动采用网卡IP
     timeout: 1s
+  web:
+    addr: 192.168.10.49:80
 data:
   database:
     driver: mysql
@@ -13,3 +16,6 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+  consul:
+    addr: 192.168.10.210:8500
+

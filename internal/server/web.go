@@ -10,12 +10,11 @@ import (
 )
 
 type WebServer struct {
+	srv *http.Server
 }
 
-var srv *http.Server
-
 func (w WebServer) Start(ctx context.Context) error {
-	fmt.Println("wev server start")
+	fmt.Println("web server start")
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		//输出json结果给调用方
@@ -23,21 +22,21 @@ func (w WebServer) Start(ctx context.Context) error {
 			"message": "pong",
 		})
 	})
-
-	srv = &http.Server{
-		Addr:    ":8080",
-		Handler: r,
-	}
-	return srv.ListenAndServe()
+	return w.srv.ListenAndServe()
 }
 
 func (w WebServer) Stop(ctx context.Context) error {
 	fmt.Println("stop ")
-	srv.Shutdown(ctx)
+	w.srv.Shutdown(ctx)
 	return nil
 }
 
-func NewWebServer(cData *conf.Data) *WebServer {
+func NewWebServer() *WebServer {
 	fmt.Println(cData.Database.Driver)
-	return &WebServer{}
+	return &WebServer{
+		srv:&http.Server{
+			Addr:    ":8080",
+			Handler: r,
+		}
+	}
 }

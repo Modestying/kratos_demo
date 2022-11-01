@@ -10,11 +10,6 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 )
 
-type Auth struct {
-	name    string
-	version string
-}
-
 func main() {
 	consulClient, err := api.NewClient(&api.Config{
 		Address: "192.168.10.210:8500",
@@ -22,8 +17,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	//consul中需要标注文件后缀，kratos读取配置需要适配文件后缀
+	//eg:key设置为Dev_Auth.yaml
 	cs, err := consul.New(consulClient, consul.WithPath("Dev_Auth"))
-	// consul中需要标注文件后缀，kratos读取配置需要适配文件后缀
+
 	// The file suffix needs to be marked, and kratos needs to adapt the file suffix to read the configuration.
 	if err != nil {
 		panic(err)

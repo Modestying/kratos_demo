@@ -10,6 +10,7 @@ import (
 
 	"helloworld/internal/conf"
 
+	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -41,7 +42,7 @@ func init() {
 	Version = "0.1"
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebServer) *kratos.App {
+func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebServer, reg *registry.Registry) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -53,6 +54,7 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebS
 			gs,
 			demo,
 		),
+		kratos.Registrar(reg),
 	)
 }
 
@@ -84,7 +86,7 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Service, logger)
 	if err != nil {
 		panic(err)
 	}
