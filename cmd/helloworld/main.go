@@ -2,10 +2,8 @@ package main
 
 import (
 	"flag"
-	//"fmt"
-	// "github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	// "github.com/hashicorp/consul/api"
-	"helloworld/internal/data"
+	"helloworld/internal/server"
+
 	"os"
 
 	"helloworld/internal/conf"
@@ -17,7 +15,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -35,14 +32,14 @@ var (
 
 func init() {
 	//服务唯一标识
-	Name = "Demo"
+	Name = "hello"
 	//id  采用主机名，不然会替代已有service.ID
 	id = "ASUS"
 	// Version is the version of the compiled software.
 	Version = "0.1"
 }
 
-func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebServer, reg *registry.Registry) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, demo *server.WebServer, reg *consul.Registry /*hs *http.Server*/) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -50,7 +47,7 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server, demo *data.WebS
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
 		kratos.Server(
-			hs,
+			//hs,
 			gs,
 			demo,
 		),
@@ -86,7 +83,7 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Service, logger)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Data.Consul, bc.Service, logger)
 	if err != nil {
 		panic(err)
 	}

@@ -1,9 +1,8 @@
-package data
+package server
 
 import (
 	"context"
 	"fmt"
-	"helloworld/internal/conf"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,21 +21,14 @@ func (w WebServer) Start(ctx context.Context) error {
 			"message": "pong",
 		})
 	})
-	return w.srv.ListenAndServe()
+	return r.Run(":8081")
 }
 
 func (w WebServer) Stop(ctx context.Context) error {
 	fmt.Println("stop ")
-	w.srv.Shutdown(ctx)
 	return nil
 }
 
 func NewWebServer() *WebServer {
-	fmt.Println(cData.Database.Driver)
-	return &WebServer{
-		srv:&http.Server{
-			Addr:    ":8080",
-			Handler: r,
-		}
-	}
+	return &WebServer{}
 }

@@ -4,10 +4,10 @@ service:
   version: "dev"
 server:
   grpc:
-    addr: 192.168.10.49:9000 #手动采用网卡IP
+    addr: 0.0.0.0:9000 #手动采用网卡IP
     timeout: 1s
   web:
-    addr: 192.168.10.49:80
+    addr: 0.0.0.0:80
 data:
   database:
     driver: mysql
@@ -17,5 +17,5 @@ data:
     read_timeout: 0.2s
     write_timeout: 0.2s
   consul:
-    addr: 192.168.10.210:8500
+    addr: 0.0.0.0:8500
 
