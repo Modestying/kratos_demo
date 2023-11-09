@@ -6,11 +6,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/hashicorp/consul/api"
-
 	. "helloworld/api/helloworld/v1"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -55,14 +54,28 @@ func main() {
 	// conn, err := grpc.Dial(serviceDomain, grpc.WithInsecure(), grpc.WithBalancerName(roundrobin.Name), grpc.WithBlock())
 	// defer conn.Close()
 
-	consul_client, err := api.NewClient(&api.Config{
-		Address: "0.0.0.0:8500",
-	})
+	// consul_client, _ := api.NewClient(&api.Config{
+	// 	Address: "0.0.0.0:8500",
+	// })
+	// dis := consul.New(consul_client)
+	//endpoint := "discovery://default/hello"
+	// conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis))
 
-	dis := consul.New(consul_client)
-	endpoint := "discovery://default/hello"
+	// conn, err := grpc.Dial("hello.service.consul:9000",
+	// 	grpc.WithTransportCredentials(insecure.NewCredentials()),
+	// 	grpc.WithResolvers(
+	// 		discovery.NewBuilder(
+	// 			dis,
+	// 			discovery.WithInsecure(true),
+	// 		),
+	// 	))
 
-	conn, err := grpc.DialInsecure(context.Background(), grpc.WithEndpoint(endpoint), grpc.WithDiscovery(dis))
+	conn, err := grpc.Dial("fyl://hello.service.consul:9000",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithResolvers(
+			NewFylBuilder("0.0.0.0", "8600"),
+		),
+	)
 	if err != nil {
 		panic(err)
 	}
