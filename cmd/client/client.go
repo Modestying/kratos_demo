@@ -10,6 +10,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/resolver"
 )
 
 func main() {
@@ -73,8 +74,9 @@ func main() {
 	conn, err := grpc.Dial("fyl://hello.service.consul:9000",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithResolvers(
-			NewFylBuilder("0.0.0.0", "8600"),
+			resolver.Get("dns"),
 		),
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 	)
 	if err != nil {
 		panic(err)
